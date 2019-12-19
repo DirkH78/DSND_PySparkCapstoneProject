@@ -1,6 +1,6 @@
 # How to Predict Customer Churn in a Web Service with PySpark
 ## Motivation
-As a provider of a web-based service, customer churn might become a major impact on the success of your service.
+As a provider of a web-based service, customer churn might have a major impact on the success of your service.
 The good news is that you may already have acquired all the necessary data that can help you identify customers who are about to leave your service.
 This is where machine learning and big data techniques can help you to detect critical customers and counteract with targeted countermeasures (nudging, proposals) before it might be to late.
 In this article I would like to introduce a data science approach which can support you in this identification process and thus help you to maintain a popular service.
@@ -9,7 +9,8 @@ In this project we are dealing with server log data of a virtual music streaming
 ![Sparkify Logo](/bin/SparkLogo.jpg)  
 The data set was kindly provided by the Udacity Data Scientist Nano-degree project team.
 The size of server log files unfortunately wont allow us to perform a classical data analysis with pandas as many of us might be used to.
-Data of this size might only be computable with clustered networks. Thus we should use Apache Spark (or PySpark respectively) to assess this amount of data.
+Data of this size might only be computable with clustered networks. Thus we should use Apache Spark (or PySpark respectively) to assess this amount of data.  
+![Spark Logo](/bin/Spark-logo-192x100px.png)
 After importing the log file (json format) into a spark data frame the log entries include the following columns (among others):  
 * __artist__: the songs artist
 * __gender__: the users gender
@@ -87,7 +88,7 @@ churn_users = df.filter(df.page == 'Cancellation Confirmation').select('userId')
 churn_users_list = [user['userId'] for user in churn_users.collect()]
 df = df.withColumn('churn', df.userId.isin(churn_users_list))
 ```
-We can now identify the number of churned user:
+We can now identify the number of churned users:
 ```
 df.filter(df.churn == True).select('userId').dropDuplicates().count()
 ```

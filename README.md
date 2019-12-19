@@ -1,8 +1,8 @@
 # Udacity Nanodegree big data Capstone Project - Spark Project: Sparkify
-This project was created for Udacity students who subscribed for the "Data Science Nanodegree" and serves as a Capstone project to summerize and deepen some of the techniques that were introduced within this course.
+This project was created for Udacity students who subscribed for the "Data Science Nanodegree" and serves as a capstone project to summarize and deepen some of the techniques that were introduced within this course.
 This repository reflects my submission for this project.
 ## Content
-* Sparkify.ipynb: jupyter Notebook with projec code
+* Sparkify.ipynb: jupyter Notebook with project code
 * README.md: this documentation
 * Analysis.md: detailed documentation about findings
 ## What did I learn?
