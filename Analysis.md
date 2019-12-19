@@ -10,7 +10,7 @@ In this project we are dealing with server log data of a virtual music streaming
 The data set was kindly provided by the Udacity Data Scientist Nano-degree project team.
 The size of server log files unfortunately wont allow us to perform a classical data analysis with pandas as many of us might be used to.
 Data of this size might only be computable with clustered networks. Thus we should use Apache Spark (or PySpark respectively) to assess this amount of data.  
-![Spark Logo](/bin/Spark-logo-192x100px.png)
+![Spark Logo](/bin/Spark-logo-192x100px.png)  
 After importing the log file (json format) into a spark data frame the log entries include the following columns (among others):  
 * __artist__: the songs artist
 * __gender__: the users gender
