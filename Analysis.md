@@ -126,7 +126,7 @@ At this point we can focus on some of the possible reasons why users leave our s
 |           feature 	| representation 	                                  | remarks                                                                                      |
 |:--------------------	|:--------------------------------------------------: |--------------------------------------------------------------------------------------------: |
 | no. of played songs 	|![Spark Logo](/bin/hist_playedSongs.png)             | users who churned are most likely to only play a limited amount of songs                     |
-| no. of "thumbs up"  	|![Spark Logo](/bin/hist_tumbsUp.png)                 | users who churned are most likely to only rate a limited amount of songs with a "thumbs up"  |
+| no. of "thumbs up"  	|![Spark Logo](/bin/hist_thumbsUp.png)                | users who churned are most likely to only rate a limited amount of songs with a "thumbs up"  |
 | no. of errors      	|![Spark Logo](/bin/hist_error.png)                   | users who churned often faced one major error before leaving the service                     |
 
 #### Modelling
