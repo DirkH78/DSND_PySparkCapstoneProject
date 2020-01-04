@@ -76,8 +76,16 @@ df.filter(df.page == 'NextSong') \
 only showing top 10 rows
 ```
 But now lets concentrate on the "user churn"!
+## Problem Statement
+There are two major problem we will face in our approach to detect user churn:
+* User churn is no variable that can directly be identified from our server logs. We need to derive feasable features that help us to identify user churn out of our existing data.
+* The vast majority of users gratefully stay with our service. This is of course very favorable when we look at this fact from the perspective of user satisfaction. But this involves many challenges when it comes to modelling user churn since our data is highly imbalanced.
+## Considered Solutions
+To adress these challenges I would like to propose the following methods:
+* user churn: we will use a users page request for the "Cancellation Confirmation" to identify and define user churn.
+* data imbalance / feasable metric: I would like to use the [F1 score](https://en.wikipedia.org/wiki/F1_score) to measure our models accuracy. The F1 score considers "recall" __and__ "precision" at the same time and thus is relatively protected against over-fitting of imbalanced data sets.
 ## Methodology
-I would like to work through an established data analysis process:
+I would like to work through an established data analysis process first:
 #### Data Cleaning
 First we need to get rid of any relicts in our data set like entries with no user or session ID. I would also recommend to convert the user ID string to an integer value to ease the ordering process of the user IDs.
 #### Data Exploration
@@ -104,26 +112,52 @@ Filtering for certain page accesses and grouping by the user helps us to come up
 * __NoOfErrors__: how many errors has the user faced
 * __NoOfAddedFriends__: how many friends has the user added
 * __NoOfSettingChanges__: how often did the user change the settings
-* __deltaT__: how long was the users account active
+* __deltaT__: how long was the users account active (this might look like "cheating" because we dont know the users activity within an online application. But this feature can be calculated online and helps to put a focus on new users who are most likely to leave our service.)
 * __PaidFreeRatio__: what is the action step ratio of paid/free subscription for individual users who downgraded at least once (roughly estimated)
 	* if the user never subscriped to full plan PaidFreeRatio is 0
 	* if the user subscriped to full plan but never cancelled the PaidFreeRatio is 1
 * __SongsPlayed_rel__: SongsPlayed divided by the time the users account was active
 * __NoOfThumbsUp_rel__: NoOfThumbsUp divided by the time the users account was active
 * __NoOfErrors_rel__: NoOfErrors divided by the time the users account was active
-* __NoOfAddedFriends_rel__: NoOfAddedFriends divided by the time the users account was active
-#### Modelling
-For the modelling process I selected three different models which were integreted into a machine learning pipeline (scaling, normalizing, indexing). After training I could realize the following performances provided by a binary classification evaluator:  
+* __NoOfAddedFriends_rel__: NoOfAddedFriends divided by the time the users account was active  
 
-|               Model 	| Training Performance 	| Test Performance 	|
-|:--------------------	|---------------------:	|----------------:	|
-| Logistic Regression 	|              90.42 % 	|         66.07 % 	|
-|       Decision Tree 	|              89.52 % 	|         75.00 % 	|
-|       Random Forest 	|              97.83 % 	|         83.04 % 	|
+At this point we can focus on some of the possible reasons why users leave our service by plotting 2 dimensional histograms which connect our features to possible user churn:  
+
+|           feature 	| representation 	                                  | remarks                                                                                      |
+|:--------------------	|:--------------------------------------------------: |--------------------------------------------------------------------------------------------: |
+| no. of played songs 	|![Spark Logo](/bin/hist_playedSongs.png)             | users who churned are most likely to only play a limited amount of songs                     |
+| no. of "thumbs up"  	|![Spark Logo](/bin/hist_tumbsUp.png)                 | users who churned are most likely to only rate a limited amount of songs with a "thumbs up"  |
+| no. of errors      	|![Spark Logo](/bin/hist_error.png)                   | users who churned often faced one major error before leaving the service                     |
+
+#### Modelling
+For the modelling process I selected three different models which were integreted into a machine learning pipeline (scaling, normalizing, indexing).
+The modelling process involves many challanges like over-fitting and a lack of generalization optins of the model within future applications with unknown data. To adress these challanges all model pipelines were integrated into a kFold cross validation with several diffenrent hyperparmaters for the model otions. This allows the identification of the best suited model and model options for the task at hand.  
+In this case we used the following hyperparameter variations:
+##### Logistic Regression Variations
+* lambda value of [regularization](https://runawayhorse001.github.io/LearningApacheSpark/reg.html):
+	* 0.0, 0.1, 0.01, 0.005
+##### Decision Tree Variations
+* impurity measures:
+	* entropy, gini
+* maximal depth:
+	* 0, 1, 2, 3, 4, 5
+##### Random Forest Variations
+* number of trees:
+	* 10, 30  
+
+After training (cross-validation) the pipeline with all several different hyperparameter sets, I could observe the following "best" performances (F1-score):  
+
+|               Model 	| Training Performance 	| Test Performance 	| Best Hyperparameters |
+|:--------------------	|---------------------:	|----------------:	|-------------------:  |
+| Logistic Regression 	|              89.32 % 	|         91.52 % 	| lambda value = 0.0   |
+|       Decision Tree 	|              94.55 % 	|         92.76 % 	| maximal depth = 1    |
+|       Random Forest 	|              92.11 % 	|         92.76 % 	| number of trees = 30 |
 
 ## Conclusion
-When it comes to customer churn, a random forest model (10 trees) with the features mentioned above gives a reliable indication of whether a customer is about to cancel the service.
+When it comes to customer churn, a decision tree model (with a maximal depth of 1) with the features mentioned above gives a reliable indication of whether a customer is about to cancel the service.
 Integrating this pipeline in your web application might help you to detect a critical customer in advance and provide suitable countermeasures.
+## Robustness
+Since we are facing highly imbalanced and reduced data, the robustness was validated by changing the so called "seed value". This value affects random choices within python (train-test-split, starting conditions,...). Changing the seed value showed an influence on the modelling accuracy that can not be fully neglected. To adress this issue, utilizing a data set with significantly more entries would be advisable!  
 ## Reflections and Improvement
 This approach might be optimized by including further state transitions (like "PaidFreeRatio") into the feature vector or adding further hyperparameters into the modelling pipelines.
 For me this little project was extremly valuable to get into PySpark and to widen my data science horizon.
