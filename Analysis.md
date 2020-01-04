@@ -77,9 +77,9 @@ only showing top 10 rows
 ```
 But now lets concentrate on the "user churn"!
 ## Problem Statement
-There are two major problem we will face in our approach to detect user churn:
-* User churn is no variable that can directly be identified from our server logs. We need to derive feasable features that help us to identify user churn out of our existing data.
-* The vast majority of users gratefully stay with our service. This is of course very favorable when we look at this fact from the perspective of user satisfaction. But this involves many challenges when it comes to modelling user churn since our data is highly imbalanced.
+There are two major problems we will face in our approach to detect user churn:
+* User churn is no variable that can directly be identified from our server logs. We need to derive feasable features that help us to identify user churn based on our existing data.
+* The vast majority of users gratefully stay with our service. This is of course very favorable when we look at this fact from the perspective of user satisfaction. But this involves many statistical challenges when it comes to modelling user churn since our data is highly imbalanced.
 ## Considered Solutions
 To adress these challenges I would like to propose the following methods:
 * user churn: we will use a users page request for the "Cancellation Confirmation" to identify and define user churn.
